@@ -15,13 +15,20 @@
            Full name is required (min 3 characters)
     </small>
     </div>
-    <!-- Email -->
+   <!-- Email -->
     <div class="form-group">
-    <label>Email *</label>
-    <input type="email" formControlName="email" />
-    <small class="error" *ngIf="f.email.touched && f.email.invalid">
-           Enter a valid email address
-    </small>
+      <label>Email *</label>
+      <input type="email" formControlName="email" />
+      
+      <!-- Check for required error -->
+      <small class="error" *ngIf="f.email.touched && f.email.errors?.['required']">
+        Email is required
+      </small>
+      
+      <!-- Check for regex pattern error -->
+      <small class="error" *ngIf="f.email.touched && f.email.errors?.['pattern']">
+        Enter a valid email address (e.g., user@domain.com)
+      </small>
     </div>
     <!-- Phone -->
     <div class="form-group">

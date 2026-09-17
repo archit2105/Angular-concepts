@@ -23,21 +23,41 @@ export class PatientEnrollmentComponent implements OnInit {
  /**
   * Initializes reactive form with validators
   */
- private initializeForm(): void {
-   this.enrollmentForm = this.fb.group({
-     patientId: [{ value: this.generatePatientId(), disabled: true }],
-     fullName: ['', [Validators.required, Validators.minLength(3)]],
-     email: ['', [Validators.required, Validators.email]],
-     phone: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
-     dob: ['', [Validators.required, this.ageValidator]],
-     gender: ['', Validators.required],
-     bloodGroup: ['', Validators.required],
-     conditions: [[]],
-     emergencyName: ['', Validators.required],
-     emergencyPhone: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
-     consent: [false, Validators.requiredTrue]
-   });
- }
+ /**
+     * Strict email regex requiring a valid domain and Top-Level Domain (TLD).
+     * 
+     *  VALID EXAMPLES (Will pass):
+     * - user@domain.com
+     * - first.last@company.co.uk
+     * - user123+tag@email.org
+     * - my-name@domain.net
+     * 
+     *  INVALID EXAMPLES (Will fail):
+     * - user@localhost          (Fails: Missing the .com/.org TLD)
+     * - user@domain.c           (Fails: TLD must be at least 2 letters)
+     * - @domain.com             (Fails: Missing the username part)
+     * - user@.com               (Fails: Missing the domain name)
+     * - user example@domain.com (Fails: Contains a space)
+     */
+private initializeForm(): void {
+    // Strict email regex requiring a valid domain and TLD (e.g., name@domain.com)
+    const strictEmailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    this.enrollmentForm = this.fb.group({
+      patientId: [{ value: this.generatePatientId(), disabled: true }],
+      fullName: ['', [Validators.required, Validators.minLength(3)]],
+      // Replaced Validators.email with Validators.pattern
+      email: ['', [Validators.required, Validators.pattern(strictEmailRegex)]], 
+      phone: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
+      dob: ['', [Validators.required, this.ageValidator]],
+      gender: ['', Validators.required],
+      bloodGroup: ['', Validators.required],
+      conditions: [[]],
+      emergencyName: ['', Validators.required],
+      emergencyPhone: ['', [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)]],
+      consent: [false, Validators.requiredTrue]
+    });
+  }
  /**
   * Custom validator to ensure patient is at least 18 years old
   */
